@@ -16,7 +16,8 @@ defmodule Broadcast do
 	debug: :boolean
       ]
     )
-    
+
+    # Mastodon
     if opts[:mastodon_access_token] != nil
     and opts[:status] != nil do
       response = post_mastodon_status(
@@ -32,7 +33,8 @@ defmodule Broadcast do
     else
       IO.puts("Skipping Mastodon.")
     end
-    
+
+    # Bluesky
     if opts[:bluesky_handle] != nil
     and opts[:bluesky_password] != nil
     and opts[:status] != nil do
@@ -55,18 +57,6 @@ defmodule Broadcast do
     else
       IO.puts("Skipping Bluesky.")
     end
-    
-    # TODO threads
-    #
-    # if opts[:mastodon_access_token] != nil and opts[:status] != nil do
-    #   post_mastodon_status(
-    # 	opts[:mastodon_access_token],
-    # 	opts[:status]
-    #   )
-    # else
-    #   IO.puts("Skipping Mastodon. Missing opts.")
-    # end
-
   end
   
   def post_mastodon_status(access_token, status) do
@@ -119,10 +109,6 @@ defmodule Broadcast do
     end
   end
 
-  def post_threads_status() do
-    
-  end
-  
   # helpers
 
   def datetime_now do
