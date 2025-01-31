@@ -1,16 +1,10 @@
 # Broadcast
 
-_Broadcast_ to multiple social media sources at once. 
-
-Currently supports write-only posting to:
-
-- Bluesky
-- Mastodon
+Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `broadcast` to your list of dependencies in `mix.exs`:
+Add `broadcast` to your list of dependancies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -20,16 +14,43 @@ def deps do
 end
 ```
 
-## TODO
+Then run `mix deps.get` to install dependencies. Broadcast requires Elixir 1.17 or later.
 
-### Release 0.1.0
-- [x] Post to Bluesky
-- [x] Post to Mastodon
-- [x] Unified Posting
-- [x] Generate documentation
-- [ ] Make available on Mix
+## Usage
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/broadcast>.
+Post to Bluesky and Mastodon simultaneously, with `post_all/1`:
+
+```elixir
+{:ok, results} = Broadcast.post_all(
+  %{
+    status: "Hello, world!",
+    mastodon_access_token: "your_mastodon_access_token",
+    bluesky_handle: "your_bluesky_handle",
+    bluesky_password: "your_bluesky_password"
+  }
+)
+```
+
+Post to Mastodon, with `post_mastodon_status/2`:
+
+```elixir
+{:ok, results} = Broadcast.post_mastodon_status(
+  "mastodon_access_token",
+  "Hello world!"
+)
+```
+
+Post to Bluesky, with `post_bluesky_status/3`:
+
+```elixir
+{:ok, result} = Broadcast.post_bluesky_status(
+  "your_bluesky_handle",
+  "your_bluesky_password",
+  "Hello world!"
+)
+```
+
+## License
+
+Broadcast's source code is released under the [MIT License](https://github.com/skyefreeman/broadcast.ex/blob/main/LICENSE).
 
