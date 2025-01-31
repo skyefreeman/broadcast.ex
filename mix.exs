@@ -39,7 +39,10 @@ defmodule Broadcast.MixProject do
     [
       maintainers: ["Skye Freeman"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/skyefreeman/broadcast.ex"},
+      links: %{
+	"GitHub" => "https://github.com/skyefreeman/broadcast.ex",
+	"Changelog" => "https://github.com/skyefreeman/broadcast.ex/blob/main/CHANGELOG.md"
+      },
       files: ~w(lib mix.exs README* LICENSE* CHANGELOG*)
     ]
   end
