@@ -7,7 +7,14 @@ defmodule Broadcast.MixProject do
       version: "0.1.0",
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: [
+	main: "readme",
+	extras: [
+	  "README.md"
+	],
+	output: "docs"
+      ]
     ]
   end
 
@@ -23,7 +30,8 @@ defmodule Broadcast.MixProject do
     [
       {:httpoison, "~> 2.2"},
       {:jason, "~> 1.4"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:ex_doc, "~> 0.36.1", only: :dev, runtime: false}
     ]
   end
 end
