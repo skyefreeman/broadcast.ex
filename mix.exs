@@ -8,30 +8,49 @@ defmodule Broadcast.MixProject do
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      docs: [
-	main: "readme",
-	extras: [
-	  "README.md"
-	],
-	output: "docs"
-      ]
+      package: package(),
+      description: description(),
+      docs: docs()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: []
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  defp description do
+    """
+    Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.
+    """		
+  end
+  
   defp deps do
     [
       {:httpoison, "~> 2.2"},
       {:jason, "~> 1.4"},
       {:uuid, "~> 1.1"},
       {:ex_doc, "~> 0.36.1", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package() do
+    [
+      maintainers: ["Skye Freeman"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/skyefreeman/broadcast.ex"},
+      files: ~w(lib mix.exs README* LICENSE* CHANGELOG*)
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: [
+	"README.md"
+      ],
+      output: "docs"
     ]
   end
 end
