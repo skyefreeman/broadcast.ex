@@ -1,4 +1,7 @@
-# Broadcast
+[![Hex Version](https://img.shields.io/hexpm/v/broadcast)](https://hex.pm/packages/broadcast) [![Hex Docs](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/broadcast/)
+
+
+# Broadcast 
 
 Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.
 
