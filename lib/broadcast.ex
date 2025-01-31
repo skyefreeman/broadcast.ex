@@ -3,8 +3,19 @@ defmodule Broadcast do
   Documentation for `Broadcast`.
   """
 
+  def post_all(
+    %{
+      status: status,
+      mastodon_access_token: mastodon_access_token,
+      bluesky_handle: bluesky_handle,
+      bluesky_password: bluesky_password
+    }
+  ) do
+    mastodon_result = post_mastodon_status(mastodon_access_token, status)
+    bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status)
+    {:ok, [mastodon_result, bluesky_result]}
+  end
   
-
   def post_mastodon_status(access_token, status) do
     base_url = "https://mastodon.social/api/v1/statuses"
 
