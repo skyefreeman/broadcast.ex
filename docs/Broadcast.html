@@ -13,7 +13,7 @@
 
     <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
     <script src="dist/handlebars.templates-K7URE6B4.js"></script>
-    <script src="dist/sidebar_items-F1E4C796.js"></script>
+    <script src="dist/sidebar_items-5C767414.js"></script>
     <script src="docs_config.js"></script>
     <script async src="dist/html-HJ5ACJPS.js"></script>
 
@@ -118,7 +118,7 @@ Pages
 
 
     <section id="moduledoc">
-<p>Documentation for <a href="Broadcast.html"><code class="inline">Broadcast</code></a>.</p>
+<p>Broadcast to multiple social media domains simultaneously through a unified interface.</p>
     </section>
 
 </div>
@@ -141,6 +141,8 @@ Pages
 
       </div>
 
+        <div class="summary-synopsis"><p>Posts a given status message to both Mastodon and Bluesky platforms.</p></div>
+
     </div>
 
     <div class="summary-row">
@@ -149,6 +151,8 @@ Pages
 
       </div>
 
+        <div class="summary-synopsis"><p>Posts a status update to the Bluesky social network.</p></div>
+
     </div>
 
     <div class="summary-row">
@@ -156,6 +160,8 @@ Pages
         <a href="#post_mastodon_status/2" data-no-tooltip translate="no">post_mastodon_status(access_token, status)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Posts a status update to the Mastodon social media platform.</p></div>
 
     </div>
 
@@ -185,7 +191,24 @@ Pages
 
   <section class="docstring">
 
-
+<p>Posts a given status message to both Mastodon and Bluesky platforms.</p><h2 id="post_all/1-parameters" class="section-heading">
+  <a href="#post_all/1-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<p>  The function takes a map containing the necessary parameters for posting:</p><ul><li><code class="inline">:status</code> - a string representing the status message to be posted.</li><li><code class="inline">:mastodon_access_token</code> - the access token for the Mastodon account for authentication.</li><li><code class="inline">:bluesky_handle</code> - the handle (username) of the Bluesky account to post the status.</li><li><code class="inline">:bluesky_password</code> - the password for the Bluesky account for authentication.</li></ul><h2 id="post_all/1-examples" class="section-heading">
+  <a href="#post_all/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<p>  iex&gt; post_all(%{
+  ...&gt;   status: &quot;Hello World!&quot;,
+  ...&gt;   mastodon_access_token: &quot;your_mastodon_token&quot;,
+  ...&gt;   bluesky_handle: &quot;your_bluesky_handle&quot;,
+  ...&gt;   bluesky_password: &quot;your_bluesky_password&quot;
+  ...&gt; })</p>
   </section>
 </section>
 <section class="detail" id="post_bluesky_status/3">
@@ -201,7 +224,19 @@ Pages
 
   <section class="docstring">
 
-
+<p>Posts a status update to the Bluesky social network.</p><h2 id="post_bluesky_status/3-parameters" class="section-heading">
+  <a href="#post_bluesky_status/3-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<ul><li><code class="inline">handle</code>: a string representing the user identifier on the Bluesky platform.</li><li><code class="inline">password</code>: a string containing the user password for authentication.</li><li><code class="inline">status</code>: a string representing the status update to be posted.</li></ul><h2 id="post_bluesky_status/3-examples" class="section-heading">
+  <a href="#post_bluesky_status/3-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<p>  iex&gt; post_bluesky_status(&quot;your_user_handle&quot;, &quot;your_password&quot;, &quot;Hello, Mastodon!&quot;)</p>
   </section>
 </section>
 <section class="detail" id="post_mastodon_status/2">
@@ -217,7 +252,19 @@ Pages
 
   <section class="docstring">
 
-
+<p>Posts a status update to the Mastodon social media platform.</p><h2 id="post_mastodon_status/2-parameters" class="section-heading">
+  <a href="#post_mastodon_status/2-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<ul><li><code class="inline">access_token</code> - The bearer token used for authentication with the Mastodon API.</li><li><code class="inline">status</code> - The string representing the status update to be posted.</li></ul><h2 id="post_mastodon_status/2-examples" class="section-heading">
+  <a href="#post_mastodon_status/2-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<p>  iex&gt; post_mastodon_status(&quot;your_access_token&quot;, &quot;Hello, Mastodon!&quot;)</p>
   </section>
 </section>
 

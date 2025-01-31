@@ -13,7 +13,7 @@
 
     <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
     <script src="dist/handlebars.templates-K7URE6B4.js"></script>
-    <script src="dist/sidebar_items-F1E4C796.js"></script>
+    <script src="dist/sidebar_items-5C767414.js"></script>
     <script src="docs_config.js"></script>
     <script async src="dist/html-HJ5ACJPS.js"></script>
 
@@ -115,32 +115,43 @@ Pages
     <span>Broadcast</span>
   </h1>
 
-<p><em>Broadcast</em> to multiple social media sources at once. </p><p>Currently supports write-only posting to:</p><ul><li>Bluesky</li><li>Mastodon</li></ul><h2 id="installation" class="section-heading">
+<p>Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.</p><h2 id="installation" class="section-heading">
   <a href="#installation" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Installation</span>
 </h2>
-<p>If <a href="https://hex.pm/docs/publish">available in Hex</a>, the package can be installed
-by adding <code class="inline">broadcast</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="3263920988-1">do</span><span class="w">
-  </span><span class="p" data-group-id="3263920988-2">[</span><span class="w">
-    </span><span class="p" data-group-id="3263920988-3">{</span><span class="ss">:broadcast</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="3263920988-3">}</span><span class="w">
-  </span><span class="p" data-group-id="3263920988-2">]</span><span class="w">
-</span><span class="k" data-group-id="3263920988-1">end</span></code></pre><h2 id="todo" class="section-heading">
-  <a href="#todo" class="hover-link">
+<p>Add <code class="inline">broadcast</code> to your list of dependancies in <code class="inline">mix.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="0232138349-1">do</span><span class="w">
+  </span><span class="p" data-group-id="0232138349-2">[</span><span class="w">
+    </span><span class="p" data-group-id="0232138349-3">{</span><span class="ss">:broadcast</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="0232138349-3">}</span><span class="w">
+  </span><span class="p" data-group-id="0232138349-2">]</span><span class="w">
+</span><span class="k" data-group-id="0232138349-1">end</span></code></pre><p>Then run <a href="https://hexdocs.pm/mix/Mix.Tasks.Deps.Get.html"><code class="inline">mix deps.get</code></a> to install dependencies. Broadcast requires Elixir 1.17 or later.</p><h2 id="usage" class="section-heading">
+  <a href="#usage" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
-  <span class="text">TODO</span>
+  <span class="text">Usage</span>
 </h2>
-<h3 id="release-0-1-0" class="section-heading">
-  <a href="#release-0-1-0" class="hover-link">
+<p>Post to Bluesky and Mastodon simultaneously, with <code class="inline">post_all/1</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="9791588505-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="9791588505-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_all</span><span class="p" data-group-id="9791588505-2">(</span><span class="w">
+  </span><span class="p" data-group-id="9791588505-3">%{</span><span class="w">
+    </span><span class="ss">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Hello, world!&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">mastodon_access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_handle</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="w">
+  </span><span class="p" data-group-id="9791588505-3">}</span><span class="w">
+</span><span class="p" data-group-id="9791588505-2">)</span></code></pre><p>Post to Mastodon, with <code class="inline">post_mastodon_status/2</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="8902207487-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="8902207487-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_mastodon_status</span><span class="p" data-group-id="8902207487-2">(</span><span class="w">
+  </span><span class="s">&quot;mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;Hello world!&quot;</span><span class="w">
+</span><span class="p" data-group-id="8902207487-2">)</span></code></pre><p>Post to Bluesky, with <code class="inline">post_bluesky_status/3</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="8225134035-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="8225134035-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_bluesky_status</span><span class="p" data-group-id="8225134035-2">(</span><span class="w">
+  </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;Hello world!&quot;</span><span class="w">
+</span><span class="p" data-group-id="8225134035-2">)</span></code></pre><h2 id="license" class="section-heading">
+  <a href="#license" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
-  <span class="text">Release 0.1.0</span>
-</h3>
-<ul><li>[x] Post to Bluesky</li><li>[x] Post to Mastodon</li><li>[x] Unified Posting</li><li>[ ] Write + generate documentation</li><li>[ ] Make available on Mix</li></ul><p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
-and published on <a href="https://hexdocs.pm">HexDocs</a>. Once published, the docs can
-be found at <a href="https://hexdocs.pm/broadcast">https://hexdocs.pm/broadcast</a>.</p>
+  <span class="text">License</span>
+</h2>
+<p>Broadcast's source code is released under the <a href="https://github.com/skyefreeman/broadcast.ex/blob/main/LICENSE">MIT License</a>.</p>
 </div>
 
 <div class="bottom-actions" id="bottom-actions">
