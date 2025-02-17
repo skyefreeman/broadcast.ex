@@ -9,7 +9,7 @@ defmodule Broadcast do
   ## Parameters
 
     The function takes a map containing the necessary parameters for posting:
-  
+
     * `:status` - a string representing the status message to be posted.
     * `:mastodon_access_token` - the access token for the Mastodon account for authentication.
     * `:bluesky_handle` - the handle (username) of the Bluesky account to post the status.
@@ -26,14 +26,12 @@ defmodule Broadcast do
     {:ok, [mastodon_result, bluesky_result]}
 
   """
-  def post_all(
-    %{
-      status: status,
-      mastodon_access_token: mastodon_access_token,
-      bluesky_handle: bluesky_handle,
-      bluesky_password: bluesky_password
-    }
-  ) do
+  def post_all(%{
+        status: status,
+        mastodon_access_token: mastodon_access_token,
+        bluesky_handle: bluesky_handle,
+        bluesky_password: bluesky_password
+      }) do
     mastodon_result = post_mastodon_status(mastodon_access_token, status)
     bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status)
     {:ok, [mastodon_result, bluesky_result]}
@@ -107,7 +105,8 @@ defmodule Broadcast do
             "collection" => "app.bsky.feed.post",
             "record" => %{
               "text" => status,
-              "createdAt" => datetime_now()
+              "createdAt" => datetime_now(),
+              "facets" => Bluesky.Facet.links(status)
             }
           },
           [
@@ -120,7 +119,6 @@ defmodule Broadcast do
         response
     end
   end
-
 
   # private helpers
 

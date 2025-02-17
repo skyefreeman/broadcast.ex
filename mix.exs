@@ -23,9 +23,9 @@ defmodule Broadcast.MixProject do
   defp description do
     """
     Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.
-    """		
+    """
   end
-  
+
   defp deps do
     [
       {:httpoison, "~> 2.2"},
@@ -40,8 +40,8 @@ defmodule Broadcast.MixProject do
       maintainers: ["Skye Freeman"],
       licenses: ["MIT"],
       links: %{
-	"GitHub" => "https://github.com/skyefreeman/broadcast.ex",
-	"Changelog" => "https://github.com/skyefreeman/broadcast.ex/blob/main/CHANGELOG.md"
+        "GitHub" => "https://github.com/skyefreeman/broadcast.ex",
+        "Changelog" => "https://github.com/skyefreeman/broadcast.ex/blob/main/CHANGELOG.md"
       },
       files: ~w(lib mix.exs README* LICENSE* CHANGELOG*)
     ]
@@ -51,7 +51,7 @@ defmodule Broadcast.MixProject do
     [
       main: "readme",
       extras: [
-	"README.md"
+        "README.md"
       ],
       output: "docs"
     ]
