@@ -24,10 +24,11 @@ defmodule Bluesky.Facet do
       ]
   """
   def links(text) do
-    url_regex = ~r/http[s]?:\/\/[^\s]+/
-    links = Regex.scan(url_regex, text, return: :index)
+    url_regex = ~r/http[s]?:\/\/[^\s]+/u
+    links = Regex.scan(url_regex, text)
 
-    Enum.map(links, fn [{start_index, length}] ->
+    Enum.map(links, fn [str] ->
+      {start_index, length} = :binary.match(text, str)
       %{
         "index" => %{
           "byteStart" => start_index,
@@ -36,7 +37,7 @@ defmodule Bluesky.Facet do
         "features" => [
           %{
             "$type" => "app.bsky.richtext.facet#link",
-            "uri" => String.slice(text, start_index, length)
+            "uri" => str
           }
         ]
       }

@@ -56,12 +56,11 @@ defmodule Broadcast do
 
     headers = [
       {"Authorization", "Bearer #{access_token}"},
-      {"Idempotency-Key", status},
+      {"Idempotency-Key", UUID.uuid4()},
       {"Content-Type", "application/json"}
     ]
 
     params = %{"status" => status}
-
     post(base_url, params, headers)
   end
 
@@ -130,7 +129,9 @@ defmodule Broadcast do
   end
 
   defp post(url, params, headers) do
-    case HTTPoison.post(url, Jason.encode!(params), headers) do
+    encoded = Jason.encode!(params, [escape: :unicode_safe])
+    response = HTTPoison.post(url, encoded, headers)
+    case response do
       {:ok, %HTTPoison.Response{status_code: 200, body: response_body}} ->
         {:ok, response_body}
 
