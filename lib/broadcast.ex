@@ -44,24 +44,99 @@ defmodule Broadcast do
 
     * `access_token` - The bearer token used for authentication with the Mastodon API.
     * `status` - The string representing the status update to be posted.
+    * `media_paths` - Optional list of file paths to images to be uploaded with the status.
 
   ## Examples
 
     iex> post_mastodon_status("your_access_token", "Hello, Mastodon!")
     {:ok, response}
 
-  """
-  def post_mastodon_status(access_token, status) do
-    base_url = "https://mastodon.social/api/v1/statuses"
+    iex> post_mastodon_status("your_access_token", "Hello, Mastodon!", ["path/to/image.jpg"])
+    {:ok, response}
 
+  """
+  def post_mastodon_status(access_token, status, media_paths \\ []) do
+    base_url = "https://mastodon.social/api/v1/statuses"
+    
     headers = [
       {"Authorization", "Bearer #{access_token}"},
       {"Idempotency-Key", UUID.uuid4()},
       {"Content-Type", "application/json"}
     ]
 
-    params = %{"status" => status}
+    params =
+      case upload_media(access_token, media_paths) do
+        {:ok, media_ids} when media_ids != [] ->
+          %{"status" => status, "media_ids" => media_ids}
+        _ ->
+          %{"status" => status}
+      end
+
     post(base_url, params, headers)
+  end
+
+  defp upload_media(access_token, []), do: {:ok, []}
+  defp upload_media(access_token, media_paths) do
+    upload_url = "https://mastodon.social/api/v2/media"
+    
+    headers = [
+      {"Authorization", "Bearer #{access_token}"}
+    ]
+
+    media_ids =
+      Enum.reduce_while(media_paths, [], fn media_path, acc ->
+        case upload_single_media(upload_url, media_path, headers) do
+          {:ok, media_id} -> {:cont, [media_id | acc]}
+          {:error, reason} -> {:halt, {:error, reason}}
+        end
+      end)
+
+    case media_ids do
+      {:error, reason} -> {:error, reason}
+      ids -> {:ok, Enum.reverse(ids)}
+    end
+  end
+
+  defp upload_single_media(upload_url, media_path, headers) do
+    case File.read(media_path) do
+      {:ok, binary} ->
+        # Get the content type based on file extension
+        content_type = get_content_type(media_path)
+        
+        # Prepare the multipart form
+        form = 
+          {:multipart, [
+            {:file, media_path, 
+              {"form-data", [{"name", "file"}, {"filename", Path.basename(media_path)}]},
+              [{"Content-Type", content_type}]}
+          ]}
+        
+        # Upload the media
+        case HTTPoison.post(upload_url, form, headers) do
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} when status_code in 200..299 ->
+            case Jason.decode(body) do
+              {:ok, %{"id" => media_id}} -> {:ok, media_id}
+              _ -> {:error, "Failed to parse media upload response"}
+            end
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+            {:error, "Media upload failed with status #{status_code}: #{body}"}
+          {:error, %HTTPoison.Error{reason: reason}} ->
+            {:error, "HTTP error during media upload: #{reason}"}
+        end
+      {:error, reason} ->
+        {:error, "Failed to read media file: #{reason}"}
+    end
+  end
+
+  defp get_content_type(file_path) do
+    case Path.extname(file_path) |> String.downcase() do
+      ".jpg" -> "image/jpeg"
+      ".jpeg" -> "image/jpeg"
+      ".png" -> "image/png"
+      ".gif" -> "image/gif"
+      ".webp" -> "image/webp"
+      _ -> "application/octet-stream"
+    end
   end
 
   @doc """
