@@ -14,6 +14,7 @@ defmodule Broadcast do
     * `:mastodon_access_token` - the access token for the Mastodon account for authentication.
     * `:bluesky_handle` - the handle (username) of the Bluesky account to post the status.
     * `:bluesky_password` - the password for the Bluesky account for authentication.
+    * `:media_paths` - Optional. A list of file paths to images to be uploaded with the status.
 
   ## Examples
 
@@ -25,15 +26,25 @@ defmodule Broadcast do
     ...> })
     {:ok, [mastodon_result, bluesky_result]}
 
+    iex> post_all(%{
+    ...>   status: "Hello World with an image!",
+    ...>   mastodon_access_token: "your_mastodon_token",
+    ...>   bluesky_handle: "your_bluesky_handle",
+    ...>   bluesky_password: "your_bluesky_password",
+    ...>   media_paths: ["path/to/image.jpg"]
+    ...> })
+    {:ok, [mastodon_result, bluesky_result]}
+
   """
   def post_all(%{
         status: status,
         mastodon_access_token: mastodon_access_token,
         bluesky_handle: bluesky_handle,
         bluesky_password: bluesky_password
-      }) do
-    mastodon_result = post_mastodon_status(mastodon_access_token, status)
-    bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status)
+      } = params) do
+    media_paths = Map.get(params, :media_paths, [])
+    mastodon_result = post_mastodon_status(mastodon_access_token, status, media_paths)
+    bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status, media_paths)
     {:ok, [mastodon_result, bluesky_result]}
   end
 
@@ -75,7 +86,7 @@ defmodule Broadcast do
     post(base_url, params, headers)
   end
 
-  defp upload_media(access_token, []), do: {:ok, []}
+  defp upload_media(_access_token, []), do: {:ok, []}
   defp upload_media(access_token, media_paths) do
     upload_url = "https://mastodon.social/api/v2/media"
     
@@ -147,14 +158,18 @@ defmodule Broadcast do
     * `handle`: a string representing the user identifier on the Bluesky platform.
     * `password`: a string containing the user password for authentication.
     * `status`: a string representing the status update to be posted.
+    * `media_paths`: Optional list of file paths to images to be uploaded with the status. Defaults to an empty list.
 
   ## Examples
 
-    iex> post_bluesky_status("your_user_handle", "your_password", "Hello, Mastodon!")
+    iex> post_bluesky_status("your_user_handle", "your_password", "Hello, Bluesky!")
+    {:ok, response}
+
+    iex> post_bluesky_status("your_user_handle", "your_password", "Hello with image!", ["path/to/image.jpg"])
     {:ok, response}
     
   """
-  def post_bluesky_status(handle, password, status) do
+  def post_bluesky_status(handle, password, status, media_paths \\ []) do
     # authenticate
     response =
       post(
@@ -170,18 +185,35 @@ defmodule Broadcast do
       {:ok, raw} ->
         json = raw |> Jason.decode!()
         access_token = json |> Map.get("accessJwt")
+        did = json |> Map.get("did")
+
+        # upload images if any
+        images = upload_bluesky_images(access_token, media_paths)
+
+        # prepare record with or without images
+        record = %{
+          "text" => status,
+          "createdAt" => datetime_now(),
+          "facets" => Bluesky.Facet.links(status)
+        }
+
+        record = 
+          case images do
+            [] -> record
+            image_refs when is_list(image_refs) ->
+              Map.put(record, "embed", %{
+                "$type" => "app.bsky.embed.images",
+                "images" => image_refs
+              })
+          end
 
         # post the status
         post(
           "https://bsky.social/xrpc/com.atproto.repo.createRecord",
           %{
-            "repo" => handle,
+            "repo" => did,
             "collection" => "app.bsky.feed.post",
-            "record" => %{
-              "text" => status,
-              "createdAt" => datetime_now(),
-              "facets" => Bluesky.Facet.links(status)
-            }
+            "record" => record
           },
           [
             {"Authorization", "Bearer #{access_token}"},
@@ -191,6 +223,52 @@ defmodule Broadcast do
 
       {:error, _raw} ->
         response
+    end
+  end
+
+  defp upload_bluesky_images(_access_token, []), do: []
+  defp upload_bluesky_images(access_token, media_paths) do
+    Enum.reduce_while(media_paths, [], fn media_path, acc ->
+      case upload_bluesky_image(access_token, media_path) do
+        {:ok, image_ref} -> {:cont, [image_ref | acc]}
+        {:error, _reason} -> {:halt, []}
+      end
+    end)
+    |> Enum.reverse()
+  end
+
+  defp upload_bluesky_image(access_token, media_path) do
+    case File.read(media_path) do
+      {:ok, binary} ->
+        content_type = get_content_type(media_path)
+        
+        # Upload the blob
+        upload_url = "https://bsky.social/xrpc/com.atproto.repo.uploadBlob"
+        headers = [
+          {"Authorization", "Bearer #{access_token}"},
+          {"Content-Type", content_type}
+        ]
+        
+        case HTTPoison.post(upload_url, binary, headers) do
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} when status_code in 200..299 ->
+            case Jason.decode(body) do
+              {:ok, %{"blob" => blob}} -> 
+                # Return the image reference in the format Bluesky expects
+                {:ok, %{
+                  "alt" => Path.basename(media_path, Path.extname(media_path)),
+                  "image" => blob
+                }}
+              _ -> 
+                {:error, "Failed to parse blob upload response"}
+            end
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+            {:error, "Blob upload failed with status #{status_code}: #{body}"}
+          {:error, %HTTPoison.Error{reason: reason}} ->
+            {:error, "HTTP error during blob upload: #{reason}"}
+        end
+        
+      {:error, reason} ->
+        {:error, "Failed to read media file: #{reason}"}
     end
   end
 
