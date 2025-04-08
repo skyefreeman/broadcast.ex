@@ -203,7 +203,7 @@ defmodule Broadcast do
         record = %{
           "text" => status,
           "createdAt" => datetime_now(),
-          "facets" => Bluesky.Facet.links(status)
+          "facets" => Bluesky.Facet.facets(status)
         }
 
         record =
