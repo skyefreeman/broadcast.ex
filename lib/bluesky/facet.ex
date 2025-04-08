@@ -30,7 +30,7 @@ defmodule Bluesky.Facet do
   def facets(text) do
     link_facets = links(text)
     hashtag_facets = hashtags(text)
-    
+
     link_facets ++ hashtag_facets
   end
 
@@ -65,25 +65,27 @@ defmodule Bluesky.Facet do
   def links(text) do
     # First pass: match URLs with the protocol
     url_regex = ~r/https?:\/\/[a-zA-Z0-9][-a-zA-Z0-9.]*\.[a-zA-Z0-9][-a-zA-Z0-9%_.~\/#?&=:]*/u
-    
+
     # Find all matches
     matches = Regex.scan(url_regex, text, return: :index)
-    
+
     Enum.map(matches, fn [{start_index, length}] ->
       # Extract the URL string
       url = binary_part(text, start_index, length)
-      
+
       # Process the URL to remove trailing punctuation
-      clean_url = case Regex.run(~r/(.*?)([.,!?;:]*)$/, url) do
-        [_, url_part, punctuation] when punctuation != "" ->
-          url_part
-        _ ->
-          url
-      end
-      
+      clean_url =
+        case Regex.run(~r/(.*?)([.,!?;:]*)$/, url) do
+          [_, url_part, punctuation] when punctuation != "" ->
+            url_part
+
+          _ ->
+            url
+        end
+
       # Calculate the adjusted length
       adjusted_length = String.length(clean_url)
-      
+
       %{
         "index" => %{
           "byteStart" => start_index,

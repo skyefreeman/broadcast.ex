@@ -15,6 +15,10 @@ defmodule Broadcast do
     * `:bluesky_handle` - the handle (username) of the Bluesky account to post the status.
     * `:bluesky_password` - the password for the Bluesky account for authentication.
     * `:media_paths` - Optional. A list of file paths to images to be uploaded with the status.
+    * `:mastodon_reply_id` - Optional. The ID of a Mastodon post to reply to.
+    * `:bluesky_reply` - Optional. A map containing details of a Bluesky post to reply to:
+      * `:root` - A map with `:uri` and `:cid` of the root (original) post in the thread.
+      * `:parent` - A map with `:uri` and `:cid` of the parent post to reply to directly.
 
   ## Examples
 
@@ -33,7 +37,20 @@ defmodule Broadcast do
     ...>   bluesky_password: "your_bluesky_password",
     ...>   media_paths: ["path/to/image.jpg"]
     ...> })
-    {:ok, [{:ok, "{\"id\": \"123\"}"}, :ok, "{\"uri\": \"at://did:123/post/123\"}"]}
+    {:ok, [{:ok, "{\"id\": \"123\"}"}, {:ok, "{\"uri\": \"at://did:123/post/123\"}"}]}
+
+    iex> Broadcast.post_all(%{
+    ...>   status: "This is a reply!",
+    ...>   mastodon_access_token: "your_mastodon_token",
+    ...>   bluesky_handle: "your_bluesky_handle",
+    ...>   bluesky_password: "your_bluesky_password",
+    ...>   mastodon_reply_id: "109372843234",
+    ...>   bluesky_reply: %{
+    ...>     root: %{uri: "at://did:123/app.bsky.feed.post/1234", cid: "bafyreic..."},
+    ...>     parent: %{uri: "at://did:123/app.bsky.feed.post/1234", cid: "bafyreic..."}
+    ...>   }
+    ...> })
+    {:ok, [{:ok, "{\"id\": \"123\"}"}, {:ok, "{\"uri\": \"at://did:123/post/456\"}"}]}
 
   """
   def post_all(
@@ -45,8 +62,15 @@ defmodule Broadcast do
         } = params
       ) do
     media_paths = Map.get(params, :media_paths, [])
-    mastodon_result = post_mastodon_status(mastodon_access_token, status, media_paths)
-    bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status, media_paths)
+    mastodon_reply_id = Map.get(params, :mastodon_reply_id)
+    bluesky_reply = Map.get(params, :bluesky_reply)
+
+    mastodon_result =
+      post_mastodon_status(mastodon_access_token, status, media_paths, mastodon_reply_id)
+
+    bluesky_result =
+      post_bluesky_status(bluesky_handle, bluesky_password, status, media_paths, bluesky_reply)
+
     {:ok, [mastodon_result, bluesky_result]}
   end
 
@@ -58,6 +82,7 @@ defmodule Broadcast do
     * `access_token` - The bearer token used for authentication with the Mastodon API.
     * `status` - The string representing the status update to be posted.
     * `media_paths` - Optional list of file paths to images to be uploaded with the status.
+    * `in_reply_to_id` - Optional ID of a status to reply to.
 
   ## Examples
 
@@ -66,9 +91,12 @@ defmodule Broadcast do
 
     iex> Broadcast.post_mastodon_status("your_access_token", "Hello, Mastodon!", ["path/to/image.jpg"])
     {:ok, "{\"id\": \"123\"}"}
+    
+    iex> Broadcast.post_mastodon_status("your_access_token", "This is a reply!", [], "109372843234")
+    {:ok, "{\"id\": \"123\"}"}
 
   """
-  def post_mastodon_status(access_token, status, media_paths \\ []) do
+  def post_mastodon_status(access_token, status, media_paths \\ [], in_reply_to_id \\ nil) do
     base_url = "https://mastodon.social/api/v1/statuses"
 
     headers = [
@@ -77,13 +105,25 @@ defmodule Broadcast do
       {"Content-Type", "application/json"}
     ]
 
+    # Start with base parameters
+    base_params = %{"status" => status}
+
+    # Add in_reply_to_id if provided
+    params_with_reply =
+      if in_reply_to_id do
+        Map.put(base_params, "in_reply_to_id", in_reply_to_id)
+      else
+        base_params
+      end
+
+    # Add media_ids if available
     params =
       case upload_media(access_token, media_paths) do
         {:ok, media_ids} when media_ids != [] ->
-          %{"status" => status, "media_ids" => media_ids}
+          Map.put(params_with_reply, "media_ids", media_ids)
 
         _ ->
-          %{"status" => status}
+          params_with_reply
       end
 
     post(base_url, params, headers)
@@ -168,6 +208,9 @@ defmodule Broadcast do
     * `password`: a string containing the user password for authentication.
     * `status`: a string representing the status update to be posted.
     * `media_paths`: Optional list of file paths to images to be uploaded with the status. Defaults to an empty list.
+    * `reply`: Optional map containing reply information with root and parent posts. Required fields for each:
+      * `root`: Map with `:uri` and `:cid` of the root post in the thread.
+      * `parent`: Map with `:uri` and `:cid` of the parent post to reply to directly.
 
   ## Examples
 
@@ -177,8 +220,15 @@ defmodule Broadcast do
     iex> Broadcast.post_bluesky_status("your_user_handle", "your_password", "Hello with image!", ["path/to/image.jpg"])
     {:ok, "{\"uri\": \"at://did:123/post/123\"}"}
     
+    iex> reply_info = %{
+    ...>   root: %{uri: "at://did:123/app.bsky.feed.post/1234", cid: "bafyreic..."},
+    ...>   parent: %{uri: "at://did:123/app.bsky.feed.post/1234", cid: "bafyreic..."}
+    ...> }
+    iex> Broadcast.post_bluesky_status("your_user_handle", "your_password", "This is a reply!", [], reply_info)
+    {:ok, "{\"uri\": \"at://did:123/post/456\"}"}
+    
   """
-  def post_bluesky_status(handle, password, status, media_paths \\ []) do
+  def post_bluesky_status(handle, password, status, media_paths \\ [], reply \\ nil) do
     # authenticate
     response =
       post(
@@ -206,6 +256,32 @@ defmodule Broadcast do
           "facets" => Bluesky.Facet.facets(status)
         }
 
+        # Add reply reference if provided
+        record =
+          if reply do
+            # Convert atom keys to string keys in the reply map
+            # The root and parent maps should have :uri and :cid keys
+            root = %{
+              "uri" => reply.root.uri,
+              "cid" => reply.root.cid
+            }
+
+            parent = %{
+              "uri" => reply.parent.uri,
+              "cid" => reply.parent.cid
+            }
+
+            reply_ref = %{
+              "root" => root,
+              "parent" => parent
+            }
+
+            Map.put(record, "reply", reply_ref)
+          else
+            record
+          end
+
+        # Add image embeds if provided
         record =
           case images do
             [] ->
