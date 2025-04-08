@@ -18,30 +18,32 @@ defmodule Broadcast do
 
   ## Examples
 
-    iex> post_all(%{
+    iex> Broadcast.post_all(%{
     ...>   status: "Hello World!",
     ...>   mastodon_access_token: "your_mastodon_token",
     ...>   bluesky_handle: "your_bluesky_handle",
     ...>   bluesky_password: "your_bluesky_password"
     ...> })
-    {:ok, [mastodon_result, bluesky_result]}
+    {:ok, [{:ok, "{\"id\": \"123\"}"}, {:ok, "{\"uri\": \"at://did:123/post/123\"}"}]}
 
-    iex> post_all(%{
+    iex> Broadcast.post_all(%{
     ...>   status: "Hello World with an image!",
     ...>   mastodon_access_token: "your_mastodon_token",
     ...>   bluesky_handle: "your_bluesky_handle",
     ...>   bluesky_password: "your_bluesky_password",
     ...>   media_paths: ["path/to/image.jpg"]
     ...> })
-    {:ok, [mastodon_result, bluesky_result]}
+    {:ok, [{:ok, "{\"id\": \"123\"}"}, :ok, "{\"uri\": \"at://did:123/post/123\"}"]}
 
   """
-  def post_all(%{
-        status: status,
-        mastodon_access_token: mastodon_access_token,
-        bluesky_handle: bluesky_handle,
-        bluesky_password: bluesky_password
-      } = params) do
+  def post_all(
+        %{
+          status: status,
+          mastodon_access_token: mastodon_access_token,
+          bluesky_handle: bluesky_handle,
+          bluesky_password: bluesky_password
+        } = params
+      ) do
     media_paths = Map.get(params, :media_paths, [])
     mastodon_result = post_mastodon_status(mastodon_access_token, status, media_paths)
     bluesky_result = post_bluesky_status(bluesky_handle, bluesky_password, status, media_paths)
@@ -59,16 +61,16 @@ defmodule Broadcast do
 
   ## Examples
 
-    iex> post_mastodon_status("your_access_token", "Hello, Mastodon!")
-    {:ok, response}
+    iex> Broadcast.post_mastodon_status("your_access_token", "Hello, Mastodon!")
+    {:ok, "{\"id\": \"123\"}"}
 
-    iex> post_mastodon_status("your_access_token", "Hello, Mastodon!", ["path/to/image.jpg"])
-    {:ok, response}
+    iex> Broadcast.post_mastodon_status("your_access_token", "Hello, Mastodon!", ["path/to/image.jpg"])
+    {:ok, "{\"id\": \"123\"}"}
 
   """
   def post_mastodon_status(access_token, status, media_paths \\ []) do
     base_url = "https://mastodon.social/api/v1/statuses"
-    
+
     headers = [
       {"Authorization", "Bearer #{access_token}"},
       {"Idempotency-Key", UUID.uuid4()},
@@ -79,6 +81,7 @@ defmodule Broadcast do
       case upload_media(access_token, media_paths) do
         {:ok, media_ids} when media_ids != [] ->
           %{"status" => status, "media_ids" => media_ids}
+
         _ ->
           %{"status" => status}
       end
@@ -87,9 +90,10 @@ defmodule Broadcast do
   end
 
   defp upload_media(_access_token, []), do: {:ok, []}
+
   defp upload_media(access_token, media_paths) do
     upload_url = "https://mastodon.social/api/v2/media"
-    
+
     headers = [
       {"Authorization", "Bearer #{access_token}"}
     ]
@@ -110,30 +114,35 @@ defmodule Broadcast do
 
   defp upload_single_media(upload_url, media_path, headers) do
     case File.read(media_path) do
-      {:ok, binary} ->
+      {:ok, _binary} ->
         # Get the content type based on file extension
         content_type = get_content_type(media_path)
-        
+
         # Prepare the multipart form
-        form = 
-          {:multipart, [
-            {:file, media_path, 
+        form =
+          {:multipart,
+           [
+             {:file, media_path,
               {"form-data", [{"name", "file"}, {"filename", Path.basename(media_path)}]},
               [{"Content-Type", content_type}]}
-          ]}
-        
+           ]}
+
         # Upload the media
         case HTTPoison.post(upload_url, form, headers) do
-          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} when status_code in 200..299 ->
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}}
+          when status_code in 200..299 ->
             case Jason.decode(body) do
               {:ok, %{"id" => media_id}} -> {:ok, media_id}
               _ -> {:error, "Failed to parse media upload response"}
             end
+
           {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
             {:error, "Media upload failed with status #{status_code}: #{body}"}
+
           {:error, %HTTPoison.Error{reason: reason}} ->
             {:error, "HTTP error during media upload: #{reason}"}
         end
+
       {:error, reason} ->
         {:error, "Failed to read media file: #{reason}"}
     end
@@ -162,11 +171,11 @@ defmodule Broadcast do
 
   ## Examples
 
-    iex> post_bluesky_status("your_user_handle", "your_password", "Hello, Bluesky!")
-    {:ok, response}
+    iex> Broadcast.post_bluesky_status("your_user_handle", "your_password", "Hello, Bluesky!")
+    {:ok, "{\"uri\": \"at://did:123/post/123\"}"}
 
-    iex> post_bluesky_status("your_user_handle", "your_password", "Hello with image!", ["path/to/image.jpg"])
-    {:ok, response}
+    iex> Broadcast.post_bluesky_status("your_user_handle", "your_password", "Hello with image!", ["path/to/image.jpg"])
+    {:ok, "{\"uri\": \"at://did:123/post/123\"}"}
     
   """
   def post_bluesky_status(handle, password, status, media_paths \\ []) do
@@ -197,9 +206,11 @@ defmodule Broadcast do
           "facets" => Bluesky.Facet.links(status)
         }
 
-        record = 
+        record =
           case images do
-            [] -> record
+            [] ->
+              record
+
             image_refs when is_list(image_refs) ->
               Map.put(record, "embed", %{
                 "$type" => "app.bsky.embed.images",
@@ -227,6 +238,7 @@ defmodule Broadcast do
   end
 
   defp upload_bluesky_images(_access_token, []), do: []
+
   defp upload_bluesky_images(access_token, media_paths) do
     Enum.reduce_while(media_paths, [], fn media_path, acc ->
       case upload_bluesky_image(access_token, media_path) do
@@ -241,32 +253,38 @@ defmodule Broadcast do
     case File.read(media_path) do
       {:ok, binary} ->
         content_type = get_content_type(media_path)
-        
+
         # Upload the blob
         upload_url = "https://bsky.social/xrpc/com.atproto.repo.uploadBlob"
+
         headers = [
           {"Authorization", "Bearer #{access_token}"},
           {"Content-Type", content_type}
         ]
-        
+
         case HTTPoison.post(upload_url, binary, headers) do
-          {:ok, %HTTPoison.Response{status_code: status_code, body: body}} when status_code in 200..299 ->
+          {:ok, %HTTPoison.Response{status_code: status_code, body: body}}
+          when status_code in 200..299 ->
             case Jason.decode(body) do
-              {:ok, %{"blob" => blob}} -> 
+              {:ok, %{"blob" => blob}} ->
                 # Return the image reference in the format Bluesky expects
-                {:ok, %{
-                  "alt" => Path.basename(media_path, Path.extname(media_path)),
-                  "image" => blob
-                }}
-              _ -> 
+                {:ok,
+                 %{
+                   "alt" => Path.basename(media_path, Path.extname(media_path)),
+                   "image" => blob
+                 }}
+
+              _ ->
                 {:error, "Failed to parse blob upload response"}
             end
+
           {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
             {:error, "Blob upload failed with status #{status_code}: #{body}"}
+
           {:error, %HTTPoison.Error{reason: reason}} ->
             {:error, "HTTP error during blob upload: #{reason}"}
         end
-        
+
       {:error, reason} ->
         {:error, "Failed to read media file: #{reason}"}
     end
@@ -282,8 +300,9 @@ defmodule Broadcast do
   end
 
   defp post(url, params, headers) do
-    encoded = Jason.encode!(params, [escape: :unicode_safe])
+    encoded = Jason.encode!(params, escape: :unicode_safe)
     response = HTTPoison.post(url, encoded, headers)
+
     case response do
       {:ok, %HTTPoison.Response{status_code: 200, body: response_body}} ->
         {:ok, response_body}

@@ -29,6 +29,7 @@ defmodule Bluesky.Facet do
 
     Enum.map(links, fn [str] ->
       {start_index, length} = :binary.match(text, str)
+
       %{
         "index" => %{
           "byteStart" => start_index,

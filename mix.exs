@@ -31,7 +31,8 @@ defmodule Broadcast.MixProject do
       {:httpoison, "~> 2.2"},
       {:jason, "~> 1.4"},
       {:uuid, "~> 1.1"},
-      {:ex_doc, "~> 0.36.1", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.36.1", only: :dev, runtime: false},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
