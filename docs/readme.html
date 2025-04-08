@@ -5,15 +5,15 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.36.1">
-    <meta name="project" content="broadcast v0.1.0">
+    <meta name="project" content="broadcast v0.2.0">
 
 
-    <title>README — broadcast v0.1.0</title>
+    <title>README — broadcast v0.2.0</title>
     <link rel="stylesheet" href="dist/html-elixir-QYVRUQZX.css" />
 
     <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
     <script src="dist/handlebars.templates-K7URE6B4.js"></script>
-    <script src="dist/sidebar_items-6CF3AD3F.js"></script>
+    <script src="dist/sidebar_items-F12080D7.js"></script>
     <script src="docs_config.js"></script>
     <script async src="dist/html-HJ5ACJPS.js"></script>
 
@@ -49,7 +49,7 @@
 broadcast
         </a>
         <div class="sidebar-projectVersion" translate="no">
-          v0.1.0
+          v0.2.0
         </div>
       </div>
     </div>
@@ -115,37 +115,104 @@ Pages
     <span>README</span>
   </h1>
 
-<p><a href="https://hex.pm/packages/broadcast"><img src="https://img.shields.io/hexpm/v/broadcast" alt="Hex Version"/></a> <a href="https://hexdocs.pm/broadcast/"><img src="https://img.shields.io/badge/docs-hexpm-blue.svg" alt="Hex Docs"/></a></p><h1>Broadcast</h1><p>Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.</p><h2 id="installation" class="section-heading">
+<p><a href="https://hex.pm/packages/broadcast"><img src="https://img.shields.io/hexpm/v/broadcast" alt="Hex Version"/></a> <a href="https://hexdocs.pm/broadcast/"><img src="https://img.shields.io/badge/docs-hexpm-blue.svg" alt="Hex Docs"/></a></p><h1>Broadcast</h1><p>Broadcast is an Elixir library for posting to social media websites, currently with support for Bluesky and Mastodon.</p><h2 id="features" class="section-heading">
+  <a href="#features" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Features</span>
+</h2>
+<ul><li>Post to multiple social media platforms with a single function call</li><li>Support for both Mastodon and Bluesky platforms</li><li>Image attachment support (multiple images per post)</li><li>Reply to existing posts</li><li>Hashtag detection and formatting for Bluesky</li><li>Link detection and formatting for Bluesky</li></ul><h2 id="installation" class="section-heading">
   <a href="#installation" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Installation</span>
 </h2>
-<p>Add <code class="inline">broadcast</code> to your list of dependancies in <code class="inline">mix.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="3122102058-1">do</span><span class="w">
-  </span><span class="p" data-group-id="3122102058-2">[</span><span class="w">
-    </span><span class="p" data-group-id="3122102058-3">{</span><span class="ss">:broadcast</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="3122102058-3">}</span><span class="w">
-  </span><span class="p" data-group-id="3122102058-2">]</span><span class="w">
-</span><span class="k" data-group-id="3122102058-1">end</span></code></pre><p>Then run <a href="https://hexdocs.pm/mix/Mix.Tasks.Deps.Get.html"><code class="inline">mix deps.get</code></a> to install dependencies. Broadcast requires Elixir 1.17 or later.</p><h2 id="usage" class="section-heading">
+<p>Add <code class="inline">broadcast</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p><pre><code class="makeup elixir" translate="no"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="1585193278-1">do</span><span class="w">
+  </span><span class="p" data-group-id="1585193278-2">[</span><span class="w">
+    </span><span class="p" data-group-id="1585193278-3">{</span><span class="ss">:broadcast</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.2.0&quot;</span><span class="p" data-group-id="1585193278-3">}</span><span class="w">
+  </span><span class="p" data-group-id="1585193278-2">]</span><span class="w">
+</span><span class="k" data-group-id="1585193278-1">end</span></code></pre><p>Then run <a href="https://hexdocs.pm/mix/Mix.Tasks.Deps.Get.html"><code class="inline">mix deps.get</code></a> to install dependencies. Broadcast requires Elixir 1.17 or later.</p><h2 id="usage" class="section-heading">
   <a href="#usage" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Usage</span>
 </h2>
-<p>Post to Bluesky and Mastodon simultaneously, with <code class="inline">post_all/1</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="7660031233-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="7660031233-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_all</span><span class="p" data-group-id="7660031233-2">(</span><span class="w">
-  </span><span class="p" data-group-id="7660031233-3">%{</span><span class="w">
+<h3 id="post-to-multiple-platforms" class="section-heading">
+  <a href="#post-to-multiple-platforms" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Post to Multiple Platforms</span>
+</h3>
+<p>Post to Bluesky and Mastodon simultaneously with <code class="inline">post_all/1</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="1995931642-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="1995931642-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_all</span><span class="p" data-group-id="1995931642-2">(</span><span class="w">
+  </span><span class="p" data-group-id="1995931642-3">%{</span><span class="w">
     </span><span class="ss">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Hello, world!&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">mastodon_access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">bluesky_handle</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">bluesky_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="w">
-  </span><span class="p" data-group-id="7660031233-3">}</span><span class="w">
-</span><span class="p" data-group-id="7660031233-2">)</span></code></pre><p>Post to Mastodon, with <code class="inline">post_mastodon_status/2</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="8390513188-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="8390513188-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_mastodon_status</span><span class="p" data-group-id="8390513188-2">(</span><span class="w">
+  </span><span class="p" data-group-id="1995931642-3">}</span><span class="w">
+</span><span class="p" data-group-id="1995931642-2">)</span></code></pre><h3 id="post-with-media" class="section-heading">
+  <a href="#post-with-media" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Post with Media</span>
+</h3>
+<p>Add media attachments to your posts with the <code class="inline">media_paths</code> parameter:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="0557167058-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="0557167058-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_all</span><span class="p" data-group-id="0557167058-2">(</span><span class="w">
+  </span><span class="p" data-group-id="0557167058-3">%{</span><span class="w">
+    </span><span class="ss">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Check out this image!&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">mastodon_access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_handle</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">media_paths</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0557167058-4">[</span><span class="s">&quot;path/to/image.jpg&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path/to/another.png&quot;</span><span class="p" data-group-id="0557167058-4">]</span><span class="w">
+  </span><span class="p" data-group-id="0557167058-3">}</span><span class="w">
+</span><span class="p" data-group-id="0557167058-2">)</span></code></pre><h3 id="post-replies" class="section-heading">
+  <a href="#post-replies" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Post Replies</span>
+</h3>
+<p>Reply to existing posts on both platforms simultaneously:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="3677143449-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p" data-group-id="3677143449-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_all</span><span class="p" data-group-id="3677143449-2">(</span><span class="w">
+  </span><span class="p" data-group-id="3677143449-3">%{</span><span class="w">
+    </span><span class="ss">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This is my reply!&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">mastodon_access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_handle</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">bluesky_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">mastodon_reply_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;109372843234&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># ID of the Mastodon post to reply to</span><span class="w">
+    </span><span class="ss">bluesky_reply</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3677143449-4">%{</span><span class="w">
+      </span><span class="c1"># Both root and parent are required for Bluesky replies</span><span class="w">
+      </span><span class="ss">root</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3677143449-5">%{</span><span class="ss">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;at://did:123/app.bsky.feed.post/original&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">cid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bafyreihg6tz&quot;</span><span class="p" data-group-id="3677143449-5">}</span><span class="p">,</span><span class="w">
+      </span><span class="ss">parent</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3677143449-6">%{</span><span class="ss">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;at://did:123/app.bsky.feed.post/parent&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">cid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bafyreiabc123&quot;</span><span class="p" data-group-id="3677143449-6">}</span><span class="w">
+    </span><span class="p" data-group-id="3677143449-4">}</span><span class="w">
+  </span><span class="p" data-group-id="3677143449-3">}</span><span class="w">
+</span><span class="p" data-group-id="3677143449-2">)</span></code></pre><h3 id="platform-specific-functions" class="section-heading">
+  <a href="#platform-specific-functions" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Platform-Specific Functions</span>
+</h3>
+<h4>Mastodon</h4><p>Post to Mastodon only:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="3381232269-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="3381232269-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_mastodon_status</span><span class="p" data-group-id="3381232269-2">(</span><span class="w">
   </span><span class="s">&quot;mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
   </span><span class="s">&quot;Hello world!&quot;</span><span class="w">
-</span><span class="p" data-group-id="8390513188-2">)</span></code></pre><p>Post to Bluesky, with <code class="inline">post_bluesky_status/3</code>:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="4457501964-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="4457501964-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_bluesky_status</span><span class="p" data-group-id="4457501964-2">(</span><span class="w">
+</span><span class="p" data-group-id="3381232269-2">)</span></code></pre><p>Reply to a Mastodon post:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="6835303563-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="6835303563-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_mastodon_status</span><span class="p" data-group-id="6835303563-2">(</span><span class="w">
+  </span><span class="s">&quot;mastodon_access_token&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;This is a reply!&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="6835303563-3">[</span><span class="p" data-group-id="6835303563-3">]</span><span class="p">,</span><span class="w"> </span><span class="c1"># Optional media paths</span><span class="w">
+  </span><span class="s">&quot;109372843234&quot;</span><span class="w"> </span><span class="c1"># ID of the post to reply to</span><span class="w">
+</span><span class="p" data-group-id="6835303563-2">)</span></code></pre><h4>Bluesky</h4><p>Post to Bluesky only:</p><pre><code class="makeup elixir" translate="no"><span class="p" data-group-id="4437400884-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="4437400884-1">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_bluesky_status</span><span class="p" data-group-id="4437400884-2">(</span><span class="w">
   </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
   </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="p">,</span><span class="w">
   </span><span class="s">&quot;Hello world!&quot;</span><span class="w">
-</span><span class="p" data-group-id="4457501964-2">)</span></code></pre><h2 id="license" class="section-heading">
+</span><span class="p" data-group-id="4437400884-2">)</span></code></pre><p>Reply to a Bluesky post:</p><pre><code class="makeup elixir" translate="no"><span class="n">reply_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="0002065955-1">%{</span><span class="w">
+  </span><span class="ss">root</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0002065955-2">%{</span><span class="ss">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;at://did:123/app.bsky.feed.post/original&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">cid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bafyreihg6tz&quot;</span><span class="p" data-group-id="0002065955-2">}</span><span class="p">,</span><span class="w">
+  </span><span class="ss">parent</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0002065955-3">%{</span><span class="ss">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;at://did:123/app.bsky.feed.post/parent&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">cid</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bafyreiabc123&quot;</span><span class="p" data-group-id="0002065955-3">}</span><span class="w">
+</span><span class="p" data-group-id="0002065955-1">}</span><span class="w">
+
+</span><span class="p" data-group-id="0002065955-4">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p" data-group-id="0002065955-4">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Broadcast</span><span class="o">.</span><span class="n">post_bluesky_status</span><span class="p" data-group-id="0002065955-5">(</span><span class="w">
+  </span><span class="s">&quot;your_bluesky_handle&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;your_bluesky_password&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s">&quot;This is a reply!&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="0002065955-6">[</span><span class="p" data-group-id="0002065955-6">]</span><span class="p">,</span><span class="w"> </span><span class="c1"># Optional media paths</span><span class="w">
+  </span><span class="n">reply_info</span><span class="w">
+</span><span class="p" data-group-id="0002065955-5">)</span></code></pre><h2 id="license" class="section-heading">
   <a href="#license" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
@@ -175,11 +242,11 @@ API Reference
       <p>
 
           <span class="line">
-            <a href="https://hex.pm/packages/broadcast/0.1.0" class="footer-hex-package">Hex Package</a>
+            <a href="https://hex.pm/packages/broadcast/0.2.0" class="footer-hex-package">Hex Package</a>
 
-            <a href="https://preview.hex.pm/preview/broadcast/0.1.0">Hex Preview</a>
+            <a href="https://preview.hex.pm/preview/broadcast/0.2.0">Hex Preview</a>
 
-              (<a href="https://preview.hex.pm/preview/broadcast/0.1.0/show/README.md">current file</a>)
+              (<a href="https://preview.hex.pm/preview/broadcast/0.2.0/show/README.md">current file</a>)
 
           </span>
 

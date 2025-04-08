@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.36.1">
+    <meta name="project" content="broadcast v0.2.0">
+
+
+    <title>Bluesky.Facet — broadcast v0.2.0</title>
+    <link rel="stylesheet" href="dist/html-elixir-QYVRUQZX.css" />
+
+    <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
+    <script src="dist/handlebars.templates-K7URE6B4.js"></script>
+    <script src="dist/sidebar_items-F12080D7.js"></script>
+    <script src="docs_config.js"></script>
+    <script async src="dist/html-HJ5ACJPS.js"></script>
+
+  </head>
+  <body class="sidebar-closed">
+    <script>
+
+      try {
+        var settings = JSON.parse(localStorage.getItem('ex_doc:settings') || '{}');
+
+        if (settings.theme === 'dark' ||
+           ((settings.theme === 'system' || settings.theme == null) &&
+             window.matchMedia('(prefers-color-scheme: dark)').matches)
+           ) {
+          document.body.classList.add('dark')
+        }
+      } catch (error) { }
+    </script>
+
+<div class="body-wrapper">
+
+<button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
+  <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
+</button>
+
+<nav id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectInfo">
+
+      <div>
+        <a href="readme.html" class="sidebar-projectName" translate="no">
+broadcast
+        </a>
+        <div class="sidebar-projectVersion" translate="no">
+          v0.2.0
+        </div>
+      </div>
+    </div>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist">
+      <li>
+        <button id="extras-list-tab-button" role="tab" data-type="extras" aria-controls="extras-tab-panel" aria-selected="true" tabindex="0">
+Pages
+        </button>
+      </li>
+
+        <li>
+          <button id="modules-list-tab-button" role="tab" data-type="modules" aria-controls="modules-tab-panel" aria-selected="false" tabindex="-1">
+            Modules
+          </button>
+        </li>
+
+
+    </ul>
+  </div>
+
+  <div id="extras-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="extras-list-tab-button">
+    <ul id="extras-full-list" class="full-list"></ul>
+  </div>
+
+    <div id="modules-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="modules-list-tab-button" hidden>
+      <ul id="modules-full-list" class="full-list"></ul>
+    </div>
+
+
+</nav>
+
+<output role="status" id="toast"></output>
+
+<main class="content page-module" id="main" data-type="modules">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of broadcast</span>
+            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          </label>
+          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
+            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
+          </button>
+          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+            <i class="ri-close-line ri-lg" title="Cancel search"></i>
+          </button>
+        </form>
+        <div class="autocomplete">
+        </div>
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
+      </div>
+    </div>
+
+<div id="top-content">
+  <h1>
+
+    <span translate="no">Bluesky.Facet</span> 
+    <small class="app-vsn" translate="no">(broadcast v0.2.0)</small>
+
+  </h1>
+
+
+    <section id="moduledoc">
+<p>Helper module for interfacing with the Bluesky Facet API:  <a href="https://docs.bsky.app/docs/advanced-guides/post-richtext">https://docs.bsky.app/docs/advanced-guides/post-richtext</a></p>
+    </section>
+
+</div>
+
+  <section id="summary" class="details-list">
+    <h1 class="section-heading">
+      <a class="hover-link" href="#summary">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Summary</span>
+    </h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#facets/1" data-no-tooltip translate="no">facets(text)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts both link and hashtag facets from the given text.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hashtags/1" data-no-tooltip translate="no">hashtags(text)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts hashtag facets from the given text.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#links/1" data-no-tooltip translate="no">links(text)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Extracts link facets from the given text.</p></div>
+
+    </div>
+
+</div>
+
+  </section>
+
+
+  <section id="functions" class="details-list">
+    <h1 class="section-heading">
+      <a class="hover-link" href="#functions">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Functions</span>
+    </h1>
+    <div class="functions-list">
+<section class="detail" id="facets/1">
+
+  <div class="detail-header">
+    <a href="#facets/1" class="detail-link" data-no-tooltip aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <h1 class="signature" translate="no">facets(text)</h1>
+
+
+  </div>
+
+  <section class="docstring">
+
+<p>Extracts both link and hashtag facets from the given text.</p><p>Scans the input text for URLs and hashtags, returning their positions along
+with associated features.</p><h2 id="facets/1-parameters" class="section-heading">
+  <a href="#facets/1-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<ul><li><code class="inline">text</code>: A string containing the text to scan for links and hashtags.</li></ul><h2 id="facets/1-examples" class="section-heading">
+  <a href="#facets/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><span class="gp unselectable">iex&gt; </span><span class="nc">Bluesky.Facet</span><span class="o">.</span><span class="n">facets</span><span class="p" data-group-id="7686884504-1">(</span><span class="s">&quot;Visit us at https://example.com, and use #elixir&quot;</span><span class="p" data-group-id="7686884504-1">)</span><span class="w">
+</span><span class="p" data-group-id="7686884504-2">[</span><span class="w">
+  </span><span class="p" data-group-id="7686884504-3">%{</span><span class="w">
+    </span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="7686884504-4">%{</span><span class="s">&quot;byteStart&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;byteEnd&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">31</span><span class="p" data-group-id="7686884504-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="s">&quot;features&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="7686884504-5">[</span><span class="p" data-group-id="7686884504-6">%{</span><span class="s">&quot;$type&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;app.bsky.richtext.facet#link&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uri&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;https://example.com&quot;</span><span class="p" data-group-id="7686884504-6">}</span><span class="p" data-group-id="7686884504-5">]</span><span class="w">
+  </span><span class="p" data-group-id="7686884504-3">}</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="7686884504-7">%{</span><span class="w">
+    </span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="7686884504-8">%{</span><span class="s">&quot;byteStart&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">41</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;byteEnd&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">48</span><span class="p" data-group-id="7686884504-8">}</span><span class="p">,</span><span class="w">
+    </span><span class="s">&quot;features&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="7686884504-9">[</span><span class="p" data-group-id="7686884504-10">%{</span><span class="s">&quot;$type&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;app.bsky.richtext.facet#tag&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tag&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;elixir&quot;</span><span class="p" data-group-id="7686884504-10">}</span><span class="p" data-group-id="7686884504-9">]</span><span class="w">
+  </span><span class="p" data-group-id="7686884504-7">}</span><span class="w">
+</span><span class="p" data-group-id="7686884504-2">]</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="hashtags/1">
+
+  <div class="detail-header">
+    <a href="#hashtags/1" class="detail-link" data-no-tooltip aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <h1 class="signature" translate="no">hashtags(text)</h1>
+
+
+  </div>
+
+  <section class="docstring">
+
+<p>Extracts hashtag facets from the given text.</p><p>Scans the input text for hashtags and returns their positions along with
+associated features. Hashtags are captured from the '#' until the next 
+whitespace character and are only included if they consist entirely of 
+alphanumeric characters and underscores.</p><h2 id="hashtags/1-parameters" class="section-heading">
+  <a href="#hashtags/1-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<ul><li><code class="inline">text</code>: A string containing the text to scan for hashtags.</li></ul><h2 id="hashtags/1-examples" class="section-heading">
+  <a href="#hashtags/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><span class="gp unselectable">iex&gt; </span><span class="nc">Bluesky.Facet</span><span class="o">.</span><span class="n">hashtags</span><span class="p" data-group-id="8838565700-1">(</span><span class="s">&quot;Check out the #elixir programming language!&quot;</span><span class="p" data-group-id="8838565700-1">)</span><span class="w">
+</span><span class="p" data-group-id="8838565700-2">[</span><span class="w">
+  </span><span class="p" data-group-id="8838565700-3">%{</span><span class="w">
+    </span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8838565700-4">%{</span><span class="s">&quot;byteStart&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;byteEnd&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">21</span><span class="p" data-group-id="8838565700-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="s">&quot;features&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8838565700-5">[</span><span class="p" data-group-id="8838565700-6">%{</span><span class="s">&quot;$type&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;app.bsky.richtext.facet#tag&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tag&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;elixir&quot;</span><span class="p" data-group-id="8838565700-6">}</span><span class="p" data-group-id="8838565700-5">]</span><span class="w">
+  </span><span class="p" data-group-id="8838565700-3">}</span><span class="w">
+</span><span class="p" data-group-id="8838565700-2">]</span><span class="w">
+
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">Bluesky.Facet</span><span class="o">.</span><span class="n">hashtags</span><span class="p" data-group-id="8838565700-7">(</span><span class="s">&quot;Invalid hashtag: #$invalid&quot;</span><span class="p" data-group-id="8838565700-7">)</span><span class="w">
+</span><span class="p" data-group-id="8838565700-8">[</span><span class="p" data-group-id="8838565700-8">]</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="links/1">
+
+  <div class="detail-header">
+    <a href="#links/1" class="detail-link" data-no-tooltip aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <h1 class="signature" translate="no">links(text)</h1>
+
+
+  </div>
+
+  <section class="docstring">
+
+<p>Extracts link facets from the given text.</p><p>Scans the input text for URLs and returns their positions along with
+associated features.</p><h2 id="links/1-parameters" class="section-heading">
+  <a href="#links/1-parameters" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Parameters</span>
+</h2>
+<ul><li><code class="inline">text</code>: A string containing the text to scan for links.</li></ul><h2 id="links/1-examples" class="section-heading">
+  <a href="#links/1-examples" class="hover-link">
+    <i class="ri-link-m" aria-hidden="true"></i>
+  </a>
+  <span class="text">Examples</span>
+</h2>
+<pre><code class="makeup elixir" translate="no"><span class="gp unselectable">iex&gt; </span><span class="nc">Bluesky.Facet</span><span class="o">.</span><span class="n">links</span><span class="p" data-group-id="8201811181-1">(</span><span class="s">&quot;Visit us at https://example.com.&quot;</span><span class="p" data-group-id="8201811181-1">)</span><span class="w">
+</span><span class="p" data-group-id="8201811181-2">[</span><span class="w">
+  </span><span class="p" data-group-id="8201811181-3">%{</span><span class="w">
+    </span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8201811181-4">%{</span><span class="s">&quot;byteStart&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;byteEnd&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">31</span><span class="p" data-group-id="8201811181-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="s">&quot;features&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8201811181-5">[</span><span class="p" data-group-id="8201811181-6">%{</span><span class="s">&quot;$type&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;app.bsky.richtext.facet#link&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uri&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;https://example.com&quot;</span><span class="p" data-group-id="8201811181-6">}</span><span class="p" data-group-id="8201811181-5">]</span><span class="w">
+  </span><span class="p" data-group-id="8201811181-3">}</span><span class="w">
+</span><span class="p" data-group-id="8201811181-2">]</span><span class="w">
+
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">Bluesky.Facet</span><span class="o">.</span><span class="n">links</span><span class="p" data-group-id="8201811181-7">(</span><span class="s">&quot;Check out https://sub.example.com/path, it&#39;s cool!&quot;</span><span class="p" data-group-id="8201811181-7">)</span><span class="w">
+</span><span class="p" data-group-id="8201811181-8">[</span><span class="w">
+  </span><span class="p" data-group-id="8201811181-9">%{</span><span class="w">
+    </span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8201811181-10">%{</span><span class="s">&quot;byteStart&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;byteEnd&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">38</span><span class="p" data-group-id="8201811181-10">}</span><span class="p">,</span><span class="w">
+    </span><span class="s">&quot;features&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="8201811181-11">[</span><span class="p" data-group-id="8201811181-12">%{</span><span class="s">&quot;$type&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;app.bsky.richtext.facet#link&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uri&quot;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="s">&quot;https://sub.example.com/path&quot;</span><span class="p" data-group-id="8201811181-12">}</span><span class="p" data-group-id="8201811181-11">]</span><span class="w">
+  </span><span class="p" data-group-id="8201811181-9">}</span><span class="w">
+</span><span class="p" data-group-id="8201811181-8">]</span></code></pre>
+  </section>
+</section>
+
+    </div>
+  </section>
+
+    <footer class="footer">
+      <p>
+
+          <span class="line">
+            <a href="https://hex.pm/packages/broadcast/0.2.0" class="footer-hex-package">Hex Package</a>
+
+            <a href="https://preview.hex.pm/preview/broadcast/0.2.0">Hex Preview</a>
+
+          </span>
+
+        <span class="line">
+          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
+            Search HexDocs
+          </button>
+
+            <a href="broadcast.epub" title="ePub version">
+              Download ePub version
+            </a>
+
+        </span>
+      </p>
+
+      <p class="built-using">
+        Built using
+        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.36.1) for the
+
+          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+      </p>
+
+    </footer>
+  </div>
+</main>
+</div>
+
+  </body>
+</html>

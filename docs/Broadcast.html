@@ -5,15 +5,15 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.36.1">
-    <meta name="project" content="broadcast v0.1.0">
+    <meta name="project" content="broadcast v0.2.0">
 
 
-    <title>Broadcast — broadcast v0.1.0</title>
+    <title>Broadcast — broadcast v0.2.0</title>
     <link rel="stylesheet" href="dist/html-elixir-QYVRUQZX.css" />
 
     <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
     <script src="dist/handlebars.templates-K7URE6B4.js"></script>
-    <script src="dist/sidebar_items-6CF3AD3F.js"></script>
+    <script src="dist/sidebar_items-F12080D7.js"></script>
     <script src="docs_config.js"></script>
     <script async src="dist/html-HJ5ACJPS.js"></script>
 
@@ -49,7 +49,7 @@
 broadcast
         </a>
         <div class="sidebar-projectVersion" translate="no">
-          v0.1.0
+          v0.2.0
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@ Pages
   <h1>
 
     <span translate="no">Broadcast</span> 
-    <small class="app-vsn" translate="no">(broadcast v0.1.0)</small>
+    <small class="app-vsn" translate="no">(broadcast v0.2.0)</small>
 
   </h1>
 
@@ -137,7 +137,7 @@ Pages
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#post_all/1" data-no-tooltip translate="no">post_all(map)</a>
+        <a href="#post_all/1" data-no-tooltip translate="no">post_all(params)</a>
 
       </div>
 
@@ -147,7 +147,7 @@ Pages
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#post_bluesky_status/3" data-no-tooltip translate="no">post_bluesky_status(handle, password, status)</a>
+        <a href="#post_bluesky_status/5" data-no-tooltip translate="no">post_bluesky_status(handle, password, status, media_paths \\ [], reply \\ nil)</a>
 
       </div>
 
@@ -157,7 +157,7 @@ Pages
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#post_mastodon_status/2" data-no-tooltip translate="no">post_mastodon_status(access_token, status)</a>
+        <a href="#post_mastodon_status/4" data-no-tooltip translate="no">post_mastodon_status(access_token, status, media_paths \\ [], in_reply_to_id \\ nil)</a>
 
       </div>
 
@@ -184,7 +184,7 @@ Pages
     <a href="#post_all/1" class="detail-link" data-no-tooltip aria-label="Link to this function">
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
-    <h1 class="signature" translate="no">post_all(map)</h1>
+    <h1 class="signature" translate="no">post_all(params)</h1>
 
 
   </div>
@@ -197,74 +197,111 @@ Pages
   </a>
   <span class="text">Parameters</span>
 </h2>
-<p>  The function takes a map containing the necessary parameters for posting:</p><ul><li><code class="inline">:status</code> - a string representing the status message to be posted.</li><li><code class="inline">:mastodon_access_token</code> - the access token for the Mastodon account for authentication.</li><li><code class="inline">:bluesky_handle</code> - the handle (username) of the Bluesky account to post the status.</li><li><code class="inline">:bluesky_password</code> - the password for the Bluesky account for authentication.</li></ul><h2 id="post_all/1-examples" class="section-heading">
+<p>  The function takes a map containing the necessary parameters for posting:</p><ul><li><code class="inline">:status</code> - a string representing the status message to be posted.</li><li><code class="inline">:mastodon_access_token</code> - the access token for the Mastodon account for authentication.</li><li><code class="inline">:bluesky_handle</code> - the handle (username) of the Bluesky account to post the status.</li><li><code class="inline">:bluesky_password</code> - the password for the Bluesky account for authentication.</li><li><code class="inline">:media_paths</code> - Optional. A list of file paths to images to be uploaded with the status.</li><li><code class="inline">:mastodon_reply_id</code> - Optional. The ID of a Mastodon post to reply to.</li><li><code class="inline">:bluesky_reply</code> - Optional. A map containing details of a Bluesky post to reply to:<ul><li><code class="inline">:root</code> - A map with <code class="inline">:uri</code> and <code class="inline">:cid</code> of the root (original) post in the thread.</li><li><code class="inline">:parent</code> - A map with <code class="inline">:uri</code> and <code class="inline">:cid</code> of the parent post to reply to directly.</li></ul></li></ul><h2 id="post_all/1-examples" class="section-heading">
   <a href="#post_all/1-examples" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Examples</span>
 </h2>
-<p>  iex&gt; post_all(%{
+<p>  iex&gt; Broadcast.post_all(%{
   ...&gt;   status: &quot;Hello World!&quot;,
   ...&gt;   mastodon_access_token: &quot;your_mastodon_token&quot;,
   ...&gt;   bluesky_handle: &quot;your_bluesky_handle&quot;,
   ...&gt;   bluesky_password: &quot;your_bluesky_password&quot;
-  ...&gt; })</p>
+  ...&gt; })
+  {:ok, [{:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}, {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/123&quot;}&quot;}]}</p><p>  iex&gt; Broadcast.post_all(%{
+  ...&gt;   status: &quot;Hello World with an image!&quot;,
+  ...&gt;   mastodon_access_token: &quot;your_mastodon_token&quot;,
+  ...&gt;   bluesky_handle: &quot;your_bluesky_handle&quot;,
+  ...&gt;   bluesky_password: &quot;your_bluesky_password&quot;,
+  ...&gt;   media_paths: [&quot;path/to/image.jpg&quot;]
+  ...&gt; })
+  {:ok, [{:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}, {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/123&quot;}&quot;}]}</p><p>  iex&gt; Broadcast.post_all(%{
+  ...&gt;   status: &quot;This is a reply!&quot;,
+  ...&gt;   mastodon_access_token: &quot;your_mastodon_token&quot;,
+  ...&gt;   bluesky_handle: &quot;your_bluesky_handle&quot;,
+  ...&gt;   bluesky_password: &quot;your_bluesky_password&quot;,
+  ...&gt;   mastodon_reply_id: &quot;109372843234&quot;,
+  ...&gt;   bluesky_reply: %{
+  ...&gt;     root: %{uri: &quot;at://did:123/app.bsky.feed.post/1234&quot;, cid: &quot;bafyreic...&quot;},
+  ...&gt;     parent: %{uri: &quot;at://did:123/app.bsky.feed.post/1234&quot;, cid: &quot;bafyreic...&quot;}
+  ...&gt;   }
+  ...&gt; })
+  {:ok, [{:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}, {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/456&quot;}&quot;}]}</p>
   </section>
 </section>
-<section class="detail" id="post_bluesky_status/3">
+<section class="detail" id="post_bluesky_status/5">
+
+    <span id="post_bluesky_status/3"></span>
+
+    <span id="post_bluesky_status/4"></span>
 
   <div class="detail-header">
-    <a href="#post_bluesky_status/3" class="detail-link" data-no-tooltip aria-label="Link to this function">
+    <a href="#post_bluesky_status/5" class="detail-link" data-no-tooltip aria-label="Link to this function">
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
-    <h1 class="signature" translate="no">post_bluesky_status(handle, password, status)</h1>
+    <h1 class="signature" translate="no">post_bluesky_status(handle, password, status, media_paths \\ [], reply \\ nil)</h1>
 
 
   </div>
 
   <section class="docstring">
 
-<p>Posts a status update to the Bluesky social network.</p><h2 id="post_bluesky_status/3-parameters" class="section-heading">
-  <a href="#post_bluesky_status/3-parameters" class="hover-link">
+<p>Posts a status update to the Bluesky social network.</p><h2 id="post_bluesky_status/5-parameters" class="section-heading">
+  <a href="#post_bluesky_status/5-parameters" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Parameters</span>
 </h2>
-<ul><li><code class="inline">handle</code>: a string representing the user identifier on the Bluesky platform.</li><li><code class="inline">password</code>: a string containing the user password for authentication.</li><li><code class="inline">status</code>: a string representing the status update to be posted.</li></ul><h2 id="post_bluesky_status/3-examples" class="section-heading">
-  <a href="#post_bluesky_status/3-examples" class="hover-link">
+<ul><li><code class="inline">handle</code>: a string representing the user identifier on the Bluesky platform.</li><li><code class="inline">password</code>: a string containing the user password for authentication.</li><li><code class="inline">status</code>: a string representing the status update to be posted.</li><li><code class="inline">media_paths</code>: Optional list of file paths to images to be uploaded with the status. Defaults to an empty list.</li><li><code class="inline">reply</code>: Optional map containing reply information with root and parent posts. Required fields for each:<ul><li><code class="inline">root</code>: Map with <code class="inline">:uri</code> and <code class="inline">:cid</code> of the root post in the thread.</li><li><code class="inline">parent</code>: Map with <code class="inline">:uri</code> and <code class="inline">:cid</code> of the parent post to reply to directly.</li></ul></li></ul><h2 id="post_bluesky_status/5-examples" class="section-heading">
+  <a href="#post_bluesky_status/5-examples" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Examples</span>
 </h2>
-<p>  iex&gt; post_bluesky_status(&quot;your_user_handle&quot;, &quot;your_password&quot;, &quot;Hello, Mastodon!&quot;)</p>
+<p>  iex&gt; Broadcast.post_bluesky_status(&quot;your_user_handle&quot;, &quot;your_password&quot;, &quot;Hello, Bluesky!&quot;)
+  {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/123&quot;}&quot;}</p><p>  iex&gt; Broadcast.post_bluesky_status(&quot;your_user_handle&quot;, &quot;your_password&quot;, &quot;Hello with image!&quot;, [&quot;path/to/image.jpg&quot;])
+  {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/123&quot;}&quot;}</p><p>  iex&gt; reply_info = %{
+  ...&gt;   root: %{uri: &quot;at://did:123/app.bsky.feed.post/1234&quot;, cid: &quot;bafyreic...&quot;},
+  ...&gt;   parent: %{uri: &quot;at://did:123/app.bsky.feed.post/1234&quot;, cid: &quot;bafyreic...&quot;}
+  ...&gt; }
+  iex&gt; Broadcast.post_bluesky_status(&quot;your_user_handle&quot;, &quot;your_password&quot;, &quot;This is a reply!&quot;, [], reply_info)
+  {:ok, &quot;{&quot;uri&quot;: &quot;at://did:123/post/456&quot;}&quot;}</p>
   </section>
 </section>
-<section class="detail" id="post_mastodon_status/2">
+<section class="detail" id="post_mastodon_status/4">
+
+    <span id="post_mastodon_status/2"></span>
+
+    <span id="post_mastodon_status/3"></span>
 
   <div class="detail-header">
-    <a href="#post_mastodon_status/2" class="detail-link" data-no-tooltip aria-label="Link to this function">
+    <a href="#post_mastodon_status/4" class="detail-link" data-no-tooltip aria-label="Link to this function">
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
-    <h1 class="signature" translate="no">post_mastodon_status(access_token, status)</h1>
+    <h1 class="signature" translate="no">post_mastodon_status(access_token, status, media_paths \\ [], in_reply_to_id \\ nil)</h1>
 
 
   </div>
 
   <section class="docstring">
 
-<p>Posts a status update to the Mastodon social media platform.</p><h2 id="post_mastodon_status/2-parameters" class="section-heading">
-  <a href="#post_mastodon_status/2-parameters" class="hover-link">
+<p>Posts a status update to the Mastodon social media platform.</p><h2 id="post_mastodon_status/4-parameters" class="section-heading">
+  <a href="#post_mastodon_status/4-parameters" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Parameters</span>
 </h2>
-<ul><li><code class="inline">access_token</code> - The bearer token used for authentication with the Mastodon API.</li><li><code class="inline">status</code> - The string representing the status update to be posted.</li></ul><h2 id="post_mastodon_status/2-examples" class="section-heading">
-  <a href="#post_mastodon_status/2-examples" class="hover-link">
+<ul><li><code class="inline">access_token</code> - The bearer token used for authentication with the Mastodon API.</li><li><code class="inline">status</code> - The string representing the status update to be posted.</li><li><code class="inline">media_paths</code> - Optional list of file paths to images to be uploaded with the status.</li><li><code class="inline">in_reply_to_id</code> - Optional ID of a status to reply to.</li></ul><h2 id="post_mastodon_status/4-examples" class="section-heading">
+  <a href="#post_mastodon_status/4-examples" class="hover-link">
     <i class="ri-link-m" aria-hidden="true"></i>
   </a>
   <span class="text">Examples</span>
 </h2>
-<p>  iex&gt; post_mastodon_status(&quot;your_access_token&quot;, &quot;Hello, Mastodon!&quot;)</p>
+<p>  iex&gt; Broadcast.post_mastodon_status(&quot;your_access_token&quot;, &quot;Hello, Mastodon!&quot;)
+  {:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}</p><p>  iex&gt; Broadcast.post_mastodon_status(&quot;your_access_token&quot;, &quot;Hello, Mastodon!&quot;, [&quot;path/to/image.jpg&quot;])
+  {:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}</p><p>  iex&gt; Broadcast.post_mastodon_status(&quot;your_access_token&quot;, &quot;This is a reply!&quot;, [], &quot;109372843234&quot;)
+  {:ok, &quot;{&quot;id&quot;: &quot;123&quot;}&quot;}</p>
   </section>
 </section>
 
@@ -275,9 +312,9 @@ Pages
       <p>
 
           <span class="line">
-            <a href="https://hex.pm/packages/broadcast/0.1.0" class="footer-hex-package">Hex Package</a>
+            <a href="https://hex.pm/packages/broadcast/0.2.0" class="footer-hex-package">Hex Package</a>
 
-            <a href="https://preview.hex.pm/preview/broadcast/0.1.0">Hex Preview</a>
+            <a href="https://preview.hex.pm/preview/broadcast/0.2.0">Hex Preview</a>
 
           </span>
 
